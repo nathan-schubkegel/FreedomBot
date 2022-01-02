@@ -1,0 +1,12 @@
+apply plugin: 'java'
+apply plugin: 'application'
+
+mainClassName = 'FreedomBot.Program'
+
+dependencies {
+  implementation 'com.google.code.gson:gson:2.8.9'
+}
+
+repositories { 
+    mavenCentral() 
+}
