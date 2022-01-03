@@ -5,5 +5,6 @@ public class Program {
     Greeter greeter = new Greeter();
     System.out.println(greeter.sayHello());
     PricePrinter.PrintThePrices();
+    TickerFetcher.PrintTheTicker();
   }
 }
