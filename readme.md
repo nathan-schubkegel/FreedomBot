@@ -16,6 +16,8 @@ References:
  - Gradle (the build system); 15 minutes to get familiar with it here: https://spring.io/guides/gs/gradle/
  - Gson (the JSON library, because Java doesn't come with one by default); 2 minutes to be delighted with how simple it is here: https://github.com/google/gson
  - Guice (the dependency injector); it could be a lot clumsier, but it's not. https://github.com/google/guice
+ - Unit Testing with JUnit 5; https://junit.org/junit5/docs/current/user-guide/
+ - Unit Testing with Gradle; https://docs.gradle.org/current/userguide/java_testing.html
 
 Building
 --------
@@ -32,6 +34,10 @@ Download Gradle from https://gradle.org/install/
 
 From a command prompt, type "gradle build" or "gradle run"
  - FUTURE: add a gradle task to produce an executable exe
+ 
+Testing
+-------
+From a command prompt, type "gradle test"
 
 Licensing
 ---------
