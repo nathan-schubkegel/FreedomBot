@@ -15,6 +15,7 @@ Trivia:
 References:
  - Gradle (the build system); 15 minutes to get familiar with it here: https://spring.io/guides/gs/gradle/
  - Gson (the JSON library, because Java doesn't come with one by default); 2 minutes to be delighted with how simple it is here: https://github.com/google/gson
+ - Guice (the dependency injector); it could be a lot clumsier, but it's not. https://github.com/google/guice
 
 Building
 --------

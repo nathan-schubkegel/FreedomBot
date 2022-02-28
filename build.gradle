@@ -5,6 +5,7 @@ mainClassName = 'FreedomBot.Program'
 
 dependencies {
   implementation 'com.google.code.gson:gson:2.8.9'
+  implementation 'com.google.inject:guice:5.1.0'
 }
 
 repositories { 
