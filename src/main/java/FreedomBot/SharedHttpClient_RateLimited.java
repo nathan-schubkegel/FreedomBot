@@ -7,7 +7,7 @@ import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
 import java.util.concurrent.CompletableFuture;
 
-public class RateLimitedHttpClient implements SharedHttpClient {
+public class SharedHttpClient_RateLimited implements SharedHttpClient {
   
   private boolean _hasLastUsedTime;
   private long _lastUsedTime;
@@ -15,7 +15,7 @@ public class RateLimitedHttpClient implements SharedHttpClient {
   
   // The @Inject annotation marks this constructor as eligible to be used by Guice.
   @Inject
-  public RateLimitedHttpClient() {
+  public SharedHttpClient_RateLimited() {
     _client = HttpClient.newHttpClient();
   }
   
