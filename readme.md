@@ -8,16 +8,9 @@ This project is (going to be) a crypto day trading bot for the exchange at https
 Trivia:
  - It's named "Freedom" in pursuit of financial freedom, which is attained once your bot is earning enough money that you can quit your day job. :D
  - It's a java project so I can get my dad to collaborate on it with me.
- - It's a desktop application (not a website) because my target audience is folks who don't want their money accessible via a TCP port. Duh.
- - It doesn't have any unit tests because I don't pay me enough to write them for my personal projects.
+ - It's a desktop application (not a Single Page App) because my target audience is folks who don't want their money accessible via a TCP port. Duh.
+ - ~~It doesn't have any unit tests because I don't pay me enough to write them for my personal projects.~~ It totally has unit tests, because this project is about money, and bugs cost money.
  - This project is built with gradle because (grumble grumble) 3rd party libraries are a necessary thing, and gradle prioritizes convention over configuration (read: simple by default).
-
-References:
- - Gradle (the build system); 15 minutes to get familiar with it here: https://spring.io/guides/gs/gradle/
- - Gson (the JSON library, because Java doesn't come with one by default); 2 minutes to be delighted with how simple it is here: https://github.com/google/gson
- - Guice (the dependency injector); it could be a lot clumsier, but it's not. https://github.com/google/guice
- - Unit Testing with JUnit 5; https://junit.org/junit5/docs/current/user-guide/
- - Unit Testing with Gradle; https://docs.gradle.org/current/userguide/java_testing.html
 
 Building
 --------
@@ -32,12 +25,22 @@ Download Gradle from https://gradle.org/install/
  - I extracted to c:\gradle
  - I added "C:\gradle\gradle-7.3.3\bin" to my PATH environment variable
 
-From a command prompt, type "gradle build" or "gradle run"
+From a command prompt, type "gradle assemble" or "gradle run"
  - FUTURE: add a gradle task to produce an executable exe
  
 Testing
 -------
-From a command prompt, type "gradle test"
+From a command prompt, type "gradle build" or "gradle test"
+ - for test failure details, see the XML files in build\test-results\test
+ - FUTURE: find a GUI-based test runner and results viewer
+
+References
+----------
+ - Gradle (the build system); 15 minutes to get familiar with it here: https://spring.io/guides/gs/gradle/
+ - Gson (the JSON library, because Java doesn't come with one by default); 2 minutes to be delighted with how simple it is here: https://github.com/google/gson
+ - Guice (the dependency injector); it could be a lot clumsier, but it's not. https://github.com/google/guice
+ - Unit Testing with JUnit 5; https://junit.org/junit5/docs/current/user-guide/
+ - Unit Testing with Gradle; https://docs.gradle.org/current/userguide/java_testing.html
 
 Licensing
 ---------

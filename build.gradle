@@ -10,10 +10,13 @@ dependencies {
 }
 
 repositories { 
-    mavenCentral() 
+  mavenCentral() 
 }
 
 test {
-    useJUnitPlatform()
-    maxParallelForks = 8
+  useJUnitPlatform()
+}
+
+tasks.withType(JavaCompile) {
+  options.deprecation = true
 }

@@ -6,7 +6,8 @@ import com.google.inject.Singleton;
 public class ProgramDependencyInjectionModule extends AbstractModule {
   @Override
   protected void configure() {
-    bind(SharedHttpClient.class).to(RateLimitedHttpClient.class).in(Singleton.class);
+    bind(AppDataDirectory.class).to(AppDataDirectory_JarLocation.class).in(Singleton.class);
+    bind(SharedHttpClient.class).to(SharedHttpClient_RateLimited.class).in(Singleton.class);
     bind(PriceFetcher.class);
   }
 }
