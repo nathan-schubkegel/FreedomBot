@@ -20,3 +20,7 @@ test {
 tasks.withType(JavaCompile) {
   options.deprecation = true
 }
+
+run {
+  standardInput = System.in
+}
