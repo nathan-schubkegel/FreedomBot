@@ -1,9 +1,9 @@
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
+//import org.junit.jupiter.api.BeforeAll;
+//import org.junit.jupiter.api.AfterAll;
  
 public class JUnit5ExampleTest {
  
@@ -29,10 +29,6 @@ public class JUnit5ExampleTest {
   // these are here for me to learn/confirm that
   // - YES INDEED the tests are running in parallel
   // - YES INDEED a new instance of this class is created for each test that runs
-  @BeforeAll
-  public static void beforeAll() {
-    System.out.printf("beforeAll %d\n", _count);
-  }
 
   @BeforeEach
   public void beforeEach() {
@@ -44,8 +40,14 @@ public class JUnit5ExampleTest {
     System.out.printf("afterEach %d\n", _count);
   }
 
-  @AfterAll
-  public static void afterAll() {
-    System.out.printf("afterAll %d\n", _count);
-  }
+  // these are commented out because it seems they run with every test! not just this class's tests!
+  //@BeforeAll
+  //public static void beforeAll() {
+  //  System.out.printf("beforeAll %d\n", _count);
+  //}
+  //
+  //@AfterAll
+  //public static void afterAll() {
+  //  System.out.printf("afterAll %d\n", _count);
+  //}
 }
