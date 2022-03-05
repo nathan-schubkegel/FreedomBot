@@ -1,5 +1,8 @@
-apply plugin: 'java'
-apply plugin: 'application'
+plugins {
+  id 'java'
+  id 'application'
+  id 'org.openjfx.javafxplugin' version '0.0.10'
+}
 
 mainClassName = 'FreedomBot.Program'
 
@@ -19,4 +22,9 @@ test {
 
 tasks.withType(JavaCompile) {
   options.deprecation = true
+}
+
+javafx {
+    version = "17.0.1"
+    modules = [ 'javafx.controls' , 'javafx.fxml' ]
 }
