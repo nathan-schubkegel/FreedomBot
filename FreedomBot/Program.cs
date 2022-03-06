@@ -1,5 +1,6 @@
 ﻿using Ninject;
 using FreedomBot;
+using System.Text;
 
 namespace FreedomBot
 {
@@ -12,6 +13,7 @@ namespace FreedomBot
         var kernel = new StandardKernel();
         kernel.Bind<IHttpClientSingleton>().To<HttpClientSingleton>().InSingletonScope();
         kernel.Bind<IHttpLogger>().To<HttpLogger>().InSingletonScope();
+        kernel.Bind<IEncryptor>().To<Encryptor>().InSingletonScope();
         
         var httpClientSingleton = kernel.Get<IHttpClientSingleton>();
         
@@ -28,6 +30,11 @@ namespace FreedomBot
           }
           
           Console.WriteLine(responseBody);
+          
+          var encryptor = kernel.Get<IEncryptor>();
+          var encrypted = encryptor.Encrypt(Encoding.UTF8.GetBytes(responseBody), Encoding.UTF8.GetBytes("hey it's my password"));
+          var decrypted = encryptor.Decrypt(encrypted, Encoding.UTF8.GetBytes("hey it's my password"));
+          Console.WriteLine(Encoding.UTF8.GetString(decrypted));
         });
       }
       catch (Exception ex)
