@@ -1,16 +1,14 @@
+namespace FreedomBot;
 
-namespace FreedomBot
+public interface IHttpLogger
 {
-  public interface IHttpLogger
-  {
-    void Log(string text);
-  }
+  void Log(string text);
+}
 
-  public class HttpLogger : IHttpLogger
+public class HttpLogger : IHttpLogger
+{
+  public void Log(string text)
   {
-    public void Log(string text)
-    {
-      System.Console.WriteLine(text);
-    }
+    System.Console.WriteLine(text);
   }
 }
