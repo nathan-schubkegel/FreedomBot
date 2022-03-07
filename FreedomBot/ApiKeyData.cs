@@ -10,10 +10,10 @@ public class ApiKeyData
 
   public ApiKeyData(string nickname, string id, string passphrase, string apiSecret, string sanityCheck)
   {
-    Nickname = nickname;
-    Id = id;
-    Passphrase = passphrase;
-    ApiSecret = apiSecret;
-    SanityCheck = sanityCheck;
+    Nickname = nickname ?? throw new ArgumentNullException(nameof(nickname));
+    Id = id ?? throw new ArgumentNullException(nameof(id));
+    Passphrase = passphrase ?? throw new ArgumentNullException(nameof(passphrase));
+    ApiSecret = apiSecret ?? throw new ArgumentNullException(nameof(apiSecret));
+    SanityCheck = sanityCheck ?? throw new ArgumentNullException(nameof(sanityCheck));
   }
 }

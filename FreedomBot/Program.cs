@@ -19,13 +19,12 @@ public class Program
       kernel.Bind<IEncryptionPassword>().To<EncryptionPassword>().InSingletonScope();
       kernel.Bind<IApiKeyDataManager>().To<ApiKeyDataManager>().InSingletonScope();
       kernel.Bind<Coinbase.IProducts>().To<Coinbase.Products>().InSingletonScope();
+      kernel.Bind<Coinbase.IAccounts>().To<Coinbase.Accounts>().InSingletonScope();
 
       // get api key
       var apiKeyData = await kernel.Get<IApiKeyDataManager>().GetData();
-      
-      // lol... print out the sensitive info we just collected
-      Console.WriteLine(JsonConvert.SerializeObject(apiKeyData, Formatting.Indented));
-      Console.WriteLine(string.Join("\n", await kernel.Get<Coinbase.IProducts>().GetCoinTypesTradableForUsd()));
+
+      Console.WriteLine(string.Join("\n", await kernel.Get<Coinbase.IAccounts>().GetAccounts()));
     }
     catch (Exception ex)
     {
