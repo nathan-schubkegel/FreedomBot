@@ -30,4 +30,8 @@ TODO
 
 Licensing
 ---------
-The contents of this repo are free and unencumbered software released into the public domain under The Unlicense. You have complete freedom to do anything you want with the software, for any purpose. Please refer to <http://unlicense.org/> .
+Except for the components noted below, the contents of this repo are free and unencumbered software released into the public domain under The Unlicense. You have complete freedom to do anything you want with the software, for any purpose. Please refer to <http://unlicense.org/> .
+
+Twofish Block Cypher
+ - Algorithm by Bruce Schneier; Twofish is unpatented, and the original C source code is uncopyrighted and license-free; it is free for all uses. See https://www.schneier.com/academic/twofish/
+ - Code by Josip Medved <jmedved@jmedved.com>, www.medo64.com; MIT License 
