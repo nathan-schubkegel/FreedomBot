@@ -62,27 +62,11 @@ public class Accounts : IAccounts
   public async Task<List<Account>> GetAccounts()
   {
     var apiKey = await _apiKeyManager.GetData();
-    
-    byte[] base64decodedSecretKey = Convert.FromBase64String(apiKey.ApiSecret);
-    var timestamp = ((long)(DateTime.UtcNow - DateTime.UnixEpoch).TotalSeconds).ToString();
-    var method = "GET";
-    var requestPath = "/accounts";
-    var body = string.Empty;
-    byte[] prehash = Encoding.UTF8.GetBytes(timestamp + method + requestPath + body);
-    var hasher = new HMACSHA256(base64decodedSecretKey);
-    byte[] hash = hasher.ComputeHash(prehash);
-    var base64hash = Convert.ToBase64String(hash);
 
-    var request = new HttpRequestMessage(HttpMethod.Get, $"https://api.exchange.coinbase.com/accounts");
-    request.Headers.Add("Accept", "application/json");
-    request.Headers.Add("User-Agent", HttpClientSingleton.UserAgent);
-    request.Headers.Add("CB-ACCESS-KEY", apiKey.Id);
-    request.Headers.Add("CB-ACCESS-SIGN", base64hash);
-    request.Headers.Add("CB-ACCESS-TIMESTAMP", timestamp);
-    request.Headers.Add("CB-ACCESS-PASSPHRASE", apiKey.Passphrase);
     List<Account>? result = null;
-    await _httpClientSingleton.UseAsync("fetching all trading accounts", async http => 
+    await _httpClientSingleton.UseAsync("fetching accounts (how much money/coins we hold)", async http => 
     {
+      var request = apiKey.MakeRequest(HttpMethod.Get, "/accounts");
       var response = await http.SendAsync(request);
       string responseBody = await response.Content.ReadAsStringAsync();
       if (!response.IsSuccessStatusCode)
