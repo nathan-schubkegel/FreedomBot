@@ -2,7 +2,7 @@ namespace FreedomBot;
 
 public interface IHttpClientSingleton
 {
-  Task UseAsync(string description, CancellationToken stoppingToken, Func<HttpClient, Task> action);
+  Task UseAsync(string description, Func<HttpClient, Task> action);
 }
 
 public class HttpClientSingleton : IHttpClientSingleton
@@ -17,9 +17,9 @@ public class HttpClientSingleton : IHttpClientSingleton
     _logger = logger;
   }
 
-  public async Task UseAsync(string description, CancellationToken stoppingToken, Func<HttpClient, Task> action)
+  public async Task UseAsync(string description, Func<HttpClient, Task> action)
   {
-    await _semaphore.WaitAsync(stoppingToken);
+    await _semaphore.WaitAsync();
     try
     {
       _logger.Log($"HttpClientSingleton: {description}");
@@ -27,7 +27,7 @@ public class HttpClientSingleton : IHttpClientSingleton
     }
     finally
     {
-      await Task.Delay(1000, stoppingToken); // ensure 1 full second between all coinbase api requests
+      await Task.Delay(1000); // ensure 1 full second between all coinbase api requests
       _semaphore.Release();
     }
   }

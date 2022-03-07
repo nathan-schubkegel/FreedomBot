@@ -19,7 +19,7 @@ Download .NET 6 SDK from https://dotnet.microsoft.com/en-us/download/dotnet/6.0
 From a command prompt
  - type "dotnet build" to see if everything compiles
  - type "dotnet run --project FreedomBot" to compile and run it (or change directory to FreedomBot and then just "dotnet run")
- - type "dotnet publish --runtime win-x64 --self-contained" to produce a distributable exe (and bazillion other files) in 
+ - type "dotnet publish FreedomBot --runtime win-x64 --self-contained" to produce a distributable exe (and bazillion other necessary files). Consider adding "--output <dirPath>" to control where the files are generated.
 
 Testing
 -------
