@@ -69,7 +69,7 @@ public class Oracle : IOracle
       string responseBody = await response.Content.ReadAsStringAsync();
       if (!response.IsSuccessStatusCode)
       {
-        throw new HttpRequestException($"coinbase pro api for all trading accounts returned {response.StatusCode}: {responseBody}");
+        throw new HttpRequestException($"coinbase pro api for signed prices from oracle returned {response.StatusCode}: {responseBody}");
       }
 
       result = JsonConvert.DeserializeObject<OracleResult>(responseBody);

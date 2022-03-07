@@ -21,12 +21,15 @@ public class Program
       kernel.Bind<Coinbase.IProducts>().To<Coinbase.Products>().InSingletonScope();
       kernel.Bind<Coinbase.IAccounts>().To<Coinbase.Accounts>().InSingletonScope();
       kernel.Bind<Coinbase.IOracle>().To<Coinbase.Oracle>().InSingletonScope();
+      kernel.Bind<Coinbase.IProductTicker>().To<Coinbase.ProductTicker>().InSingletonScope();
 
       // get api key
       var apiKeyData = await kernel.Get<IApiKeyDataManager>().GetData();
 
+      Console.WriteLine(string.Join("\n", (await kernel.Get<Coinbase.IProducts>().GetCoinTypesTradableForUsd())));
       Console.WriteLine(string.Join("\n", (await kernel.Get<Coinbase.IAccounts>().GetAccounts()).Where(x => x.Balance > 0m)));
       Console.WriteLine(string.Join("\n", (await kernel.Get<Coinbase.IOracle>().GetSignedPrices()).Prices.Select(x => $"{x.Key} = {x.Value.ToString("G29")}")));
+      Console.WriteLine(string.Join("\n", (await kernel.Get<Coinbase.IProductTicker>().GetTicker("AVAX"))));
     }
     catch (Exception ex)
     {

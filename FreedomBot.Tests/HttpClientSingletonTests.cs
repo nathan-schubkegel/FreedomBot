@@ -23,7 +23,7 @@ public class HttpClientSingletonTests
     request.Headers.Add("Accept", "application/json");
     request.Headers.Add("User-Agent", HttpClientSingleton.UserAgent);
     string? responseBody = null;
-    await service.UseAsync($"asking for the time", CancellationToken.None, async http => 
+    await service.UseAsync($"asking for the time", async http => 
     {
       var response = await http.SendAsync(request);
       responseBody = await response.Content.ReadAsStringAsync();

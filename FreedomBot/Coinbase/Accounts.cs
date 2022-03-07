@@ -71,7 +71,7 @@ public class Accounts : IAccounts
       string responseBody = await response.Content.ReadAsStringAsync();
       if (!response.IsSuccessStatusCode)
       {
-        throw new HttpRequestException($"coinbase pro api for all trading accounts returned {response.StatusCode}: {responseBody}");
+        throw new HttpRequestException($"coinbase pro api for accounts (how much money/coins we hold) returned {response.StatusCode}: {responseBody}");
       }
       result = JsonConvert.DeserializeObject<List<Account>>(responseBody);
     });
