@@ -16,13 +16,15 @@ Building
 Download .NET 6 SDK from https://dotnet.microsoft.com/en-us/download/dotnet/6.0
  - I downloaded SDK version 6.0.200
 
-From a command prompt, type "dotnet build" or "dotnet run"
-
-Also "dotnet publish -r win-x64 --self-contained" to produce a distributable exe and bazillion other needed files.
+From a command prompt
+ - type "dotnet build" to see if everything compiles
+ - type "dotnet run --project FreedomBot" to compile and run it (or change directory to FreedomBot and then just "dotnet run")
+ - type "dotnet publish --runtime win-x64 --self-contained" to produce a distributable exe (and bazillion other files) in 
 
 Testing
 -------
-TODO
+From a command prompt
+ - type "dotnet test"
 
 References
 ----------
