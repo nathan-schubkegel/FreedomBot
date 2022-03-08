@@ -24,7 +24,8 @@ From a command prompt
 Testing
 -------
 From a command prompt
- - type "dotnet test"
+ - type "dotnet test" to run the xunit tests
+ - type "dotnet run --project FreedomBot.ManualTests" to run query tests that hit coinbase's API. This will prompt for an API key.
 
 References
 ----------
