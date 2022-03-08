@@ -28,4 +28,20 @@ public static class AuthenticatedRequest
 
     return request;
   }
+  
+  public static async Task<string> SendGetRequest(this IHttpClientSingleton httpClientSingleton, ApiKeyData apiKey, string requestPath, string description)
+  {
+    string? responseBody = null;
+    await httpClientSingleton.UseAsync($"fetching {description}", async http =>
+    {
+      var request = apiKey.MakeRequest(HttpMethod.Get, requestPath);
+      var response = await http.SendAsync(request);
+      responseBody = await response.Content.ReadAsStringAsync();
+      if (!response.IsSuccessStatusCode)
+      {
+        throw new HttpRequestException($"coinbase pro api for {description} returned {response.StatusCode}: {responseBody}");
+      }
+    });
+    return responseBody ?? throw new NullReferenceException();
+  }
 }
