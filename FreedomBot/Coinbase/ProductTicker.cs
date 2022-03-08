@@ -58,21 +58,8 @@ public class ProductTicker : IProductTicker
   public async Task<ProductTickerResult> GetTicker(string coinType)
   {
     var apiKey = await _apiKeyManager.GetData();
-
-    ProductTickerResult? result = null;
-    await _httpClientSingleton.UseAsync($"fetching ticker (current price) for {coinType}", async http => 
-    {
-      var request = apiKey.MakeRequest(HttpMethod.Get, $"/products/{coinType}-USD/ticker");
-      var response = await http.SendAsync(request);
-      string responseBody = await response.Content.ReadAsStringAsync();
-      if (!response.IsSuccessStatusCode)
-      {
-        throw new HttpRequestException($"coinbase pro api for {coinType} ticker returned {response.StatusCode}: {responseBody}");
-      }
-
-      result = JsonConvert.DeserializeObject<ProductTickerResult>(responseBody);
-    });
-
+    string responseBody = await _httpClientSingleton.SendGetRequest(apiKey, $"/products/{coinType}-USD/ticker", "ticker (current price) for {coinType}");
+    var result = JsonConvert.DeserializeObject<ProductTickerResult>(responseBody);
     return result ?? throw new NullReferenceException();
   }
 }

@@ -60,21 +60,8 @@ public class Oracle : IOracle
   public async Task<OracleResult> GetSignedPrices()
   {
     var apiKey = await _apiKeyManager.GetData();
-
-    OracleResult? result = null;
-    await _httpClientSingleton.UseAsync("fetching signed prices from oracle", async http => 
-    {
-      var request = apiKey.MakeRequest(HttpMethod.Get, "/oracle");
-      var response = await http.SendAsync(request);
-      string responseBody = await response.Content.ReadAsStringAsync();
-      if (!response.IsSuccessStatusCode)
-      {
-        throw new HttpRequestException($"coinbase pro api for signed prices from oracle returned {response.StatusCode}: {responseBody}");
-      }
-
-      result = JsonConvert.DeserializeObject<OracleResult>(responseBody);
-    });
-
+    string responseBody = await _httpClientSingleton.SendGetRequest(apiKey, "/oracle", "signed prices from oracle");
+    var result = JsonConvert.DeserializeObject<OracleResult>(responseBody);
     return result ?? throw new NullReferenceException();
   }
 }

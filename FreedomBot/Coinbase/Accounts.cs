@@ -62,20 +62,8 @@ public class Accounts : IAccounts
   public async Task<List<Account>> GetAccounts()
   {
     var apiKey = await _apiKeyManager.GetData();
-
-    List<Account>? result = null;
-    await _httpClientSingleton.UseAsync("fetching accounts (how much money/coins we hold)", async http => 
-    {
-      var request = apiKey.MakeRequest(HttpMethod.Get, "/accounts");
-      var response = await http.SendAsync(request);
-      string responseBody = await response.Content.ReadAsStringAsync();
-      if (!response.IsSuccessStatusCode)
-      {
-        throw new HttpRequestException($"coinbase pro api for accounts (how much money/coins we hold) returned {response.StatusCode}: {responseBody}");
-      }
-      result = JsonConvert.DeserializeObject<List<Account>>(responseBody);
-    });
-    
+    string responseBody = await _httpClientSingleton.SendGetRequest(apiKey, "/accounts", "accounts (how much money/coins we hold)");
+    var result = JsonConvert.DeserializeObject<List<Account>>(responseBody);
     return result ?? throw new NullReferenceException();
   }
 }
