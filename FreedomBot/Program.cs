@@ -16,6 +16,9 @@ public class Program
       // get api key at the start of the app, so that the first thing the app always does is ask for password
       var apiKeyData = await kernel.Get<IApiKeyDataManager>().GetData();
 
+      // This worked! It bought me $50 of ENJ
+      //var orderId = await kernel.Get<Coinbase.ICreateOrder>().MarketBuy("ENJ", 50m);
+
       return 0;
     }
     catch (Exception ex)
@@ -39,6 +42,7 @@ public class Program
     kernel.Bind<Coinbase.IOracle>().To<Coinbase.Oracle>().InSingletonScope();
     kernel.Bind<Coinbase.IProductTicker>().To<Coinbase.ProductTicker>().InSingletonScope();
     kernel.Bind<Coinbase.IFees>().To<Coinbase.Fees>().InSingletonScope();
+    kernel.Bind<Coinbase.ICreateOrder>().To<Coinbase.CreateOrder>().InSingletonScope();
     return kernel;
   }
 }
