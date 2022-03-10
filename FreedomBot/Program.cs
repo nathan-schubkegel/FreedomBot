@@ -1,34 +1,34 @@
 ﻿using Ninject;
-using FreedomBot;
-using System.Text;
-using Newtonsoft.Json;
 
 namespace FreedomBot;
 
-public class Program
+public static class Program
 {
-  public static async Task<int> Main(string[] args)
+  public static async Task<int> Main(string[] argsArray)
   {
     try
     {
-      var kernel = CreateServiceProvider();
-
-      // get api key at the start of the app, so that the first thing the app always does is ask for password
-      var apiKeyData = await kernel.Get<IApiKeyDataManager>().GetData();
-
-      // This worked! It bought me $50 of ENJ
-      //var orderId = await kernel.Get<Coinbase.ICreateOrder>().MarketBuy("ENJ", 50m);
-
+      var args = new ProgramArgs(argsArray);
+      StandardKernel kernel = CreateServiceProvider(args);
+      switch (args[0].ToLowerInvariant())
+      {
+        case "double-sided-limit-sell":
+          await kernel.Get<Programs.DoubleSidedLimitSell>().Run();
+          break;
+          
+        default:
+          throw new Exception("invalid arguments; first argument must be double-sided-limit-sell");
+      };
       return 0;
     }
     catch (Exception ex)
     {
-      Console.Error.WriteLine("Unhandled program-level " + ex.ToString());
+      Console.Error.WriteLine(ex.ToString());
       return 1;
     }
   }
   
-  public static StandardKernel CreateServiceProvider()
+  public static StandardKernel CreateServiceProvider(ProgramArgs args)
   {
     var kernel = new StandardKernel();
     kernel.Bind<IHttpClientSingleton>().To<HttpClientSingleton>().InSingletonScope();
@@ -43,6 +43,8 @@ public class Program
     kernel.Bind<Coinbase.IProductTicker>().To<Coinbase.ProductTicker>().InSingletonScope();
     kernel.Bind<Coinbase.IFees>().To<Coinbase.Fees>().InSingletonScope();
     kernel.Bind<Coinbase.ICreateOrder>().To<Coinbase.CreateOrder>().InSingletonScope();
+    kernel.Bind<Programs.DoubleSidedLimitSell>().ToSelf();
+    kernel.Bind<ProgramArgs>().ToMethod(_ => args).InSingletonScope();
     return kernel;
   }
 }

@@ -16,7 +16,7 @@ public class Program
   {
     try
     {
-      _kernel = FreedomBot.Program.CreateServiceProvider();
+      _kernel = FreedomBot.Program.CreateServiceProvider(new ProgramArgs(new string[0]));
 
       // get api key at the start of the test, so that the first thing the test always does is ask for password
       var apiKeyData = await _kernel.Get<IApiKeyDataManager>().GetData();
@@ -49,9 +49,9 @@ public class Program
   {
     var accounts = await _kernel.Get<Coinbase.IAccounts>().GetAccounts();
     Console.WriteLine(string.Join("\n", accounts.Where(a => a.Balance > 0m)));
-    Assert.Single(accounts, a => a.Currency == "ETH");
+    Assert.Single(accounts, a => a.CoinType == "ETH");
     
-    var eth = accounts.Single(a => a.Currency == "ETH");
+    var eth = accounts.Single(a => a.CoinType == "ETH");
     Assert.InRange(eth.Balance, 0m, Decimal.MaxValue);
     Assert.InRange(eth.Hold, 0m, Decimal.MaxValue);
     Assert.InRange(eth.Available, 0m, Decimal.MaxValue);

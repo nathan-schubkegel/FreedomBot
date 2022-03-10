@@ -58,7 +58,7 @@ public class ProductTicker : IProductTicker
   public async Task<ProductTickerResult> GetTicker(string coinType)
   {
     var apiKey = await _apiKeyManager.GetData();
-    string responseBody = await _httpClientSingleton.SendGetRequest(apiKey, $"/products/{coinType}-USD/ticker", "ticker (current price) for {coinType}");
+    string responseBody = await _httpClientSingleton.SendGetRequest(apiKey, $"/products/{coinType}-USD/ticker", $"ticker (current price) for {coinType}");
     var result = JsonConvert.DeserializeObject<ProductTickerResult>(responseBody);
     return result ?? throw new NullReferenceException();
   }
