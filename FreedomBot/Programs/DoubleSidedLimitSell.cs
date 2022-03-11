@@ -6,17 +6,20 @@ public class DoubleSidedLimitSell
 {
   private readonly Coinbase.IAccounts _accounts;
   private readonly Coinbase.IProductTicker _productTicker;
+  private readonly Coinbase.ICreateOrder _createOrder;
   private readonly ProgramArgs _programArgs;
   private string _coinType = string.Empty;
   private Decimal? _coinCount;
   private Decimal _low;
   private Decimal _high;
   
-  public DoubleSidedLimitSell(Coinbase.IAccounts accounts, Coinbase.IProductTicker productTicker, ProgramArgs programArgs)
+  public DoubleSidedLimitSell(Coinbase.IAccounts accounts, Coinbase.IProductTicker productTicker,
+    ProgramArgs programArgs, Coinbase.ICreateOrder createOrder)
   {
     _accounts = accounts;
     _productTicker = productTicker;
     _programArgs = programArgs;
+    _createOrder = createOrder;
   }
   
   public async Task Run()
@@ -82,27 +85,49 @@ public class DoubleSidedLimitSell
     if (ticker.LastTradePrice < _low)
     {
       throw new Exception($"unable to perform double-sided limit order; the most recent trade for {_coinType} was " +
-        $"{ticker.LastTradePrice.ToString("c", CultureInfo.InvariantCulture)} which is below your provided low sell limit " +
-        $"{_low.ToString("c", CultureInfo.InvariantCulture)}");
+        $"${ticker.LastTradePrice.ToString(CultureInfo.InvariantCulture)} which is below your provided low sell limit " +
+        $"${_low.ToString(CultureInfo.InvariantCulture)}");
     }
     if (ticker.LastTradePrice > _high)
     {
       throw new Exception($"unable to perform double-sided limit order; the most recent trade for {_coinType} was " +
-        $"{ticker.LastTradePrice.ToString("c", CultureInfo.InvariantCulture)} which is above your provided high sell limit " +
-        $"{_high.ToString("c", CultureInfo.InvariantCulture)}");
+        $"${ticker.LastTradePrice.ToString(CultureInfo.InvariantCulture)} which is above your provided high sell limit " +
+        $"${_high.ToString(CultureInfo.InvariantCulture)}");
     }
 
     Console.WriteLine($"Entering loop to watch current price of {_coinType}, " +
       $"to sell {(_coinCount?.ToString(CultureInfo.InvariantCulture) ?? "all")} " +
-      $"when price drops to {_low.ToString("c", CultureInfo.InvariantCulture)} " +
-      $"or climbs to {_high.ToString("c", CultureInfo.InvariantCulture)}");
+      $"when average price over 1 minute drops to ${_low.ToString(CultureInfo.InvariantCulture)} " +
+      $"or climbs to ${_high.ToString(CultureInfo.InvariantCulture)}");
 
-    while (ticker.LastTradePrice > _low && ticker.LastTradePrice < _high)
+    var lastTradePrices = new Queue<Decimal>();
+    lastTradePrices.Enqueue(ticker.LastTradePrice);
+    var average = ticker.LastTradePrice;
+    int maxDecimals = ticker.LastTradePrice.GetDecimalDigits();
+    while (average > _low && average < _high)
     {
-      ticker = await _productTicker.GetTicker(_coinType);
-      Console.WriteLine($"The most recent trade was for {ticker.LastTradePrice.ToString("c", CultureInfo.InvariantCulture)}");
+      try
+      {
+        ticker = await _productTicker.GetTicker(_coinType);
+        lastTradePrices.Enqueue(ticker.LastTradePrice);
+        while (lastTradePrices.Count > 60) lastTradePrices.Dequeue();
+        average = lastTradePrices.Average();
+        maxDecimals = Math.Max(maxDecimals, ticker.LastTradePrice.GetDecimalDigits());
+        var averageText = average.SetMaxDecimals(maxDecimals).ToString(CultureInfo.InvariantCulture);
+        var lastTradePriceText = ticker.LastTradePrice.SetMaxDecimals(maxDecimals).ToString(CultureInfo.InvariantCulture);
+        Console.WriteLine($"1-minute-average=${averageText} last-trade-price=${lastTradePriceText}");
+      }
+      catch (Exception ex)
+      {
+        Console.WriteLine(ex.ToString());
+      }
     }
 
-    Console.WriteLine($"Ding fries are done! (would sell at {ticker.LastTradePrice.ToString("c", CultureInfo.InvariantCulture)})");
+    Console.WriteLine($"Ding fries are done!");
+    accounts = await _accounts.GetAccounts();
+    account = accounts.FirstOrDefault(x => x.CoinType == _coinType) ?? throw new Exception($"somehow unable to learn coin count before sale");
+    Console.WriteLine($"selling {account.Available} {_coinType} at ${lastTradePrices.Peek().ToString(CultureInfo.InvariantCulture)} at {DateTime.Now}");
+    var order = await _createOrder.MarketSell(_coinType, account.Available);
+    Console.WriteLine(order.Fields.ToString());
   }
 }
