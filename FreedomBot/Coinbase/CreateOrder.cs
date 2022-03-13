@@ -62,7 +62,7 @@ public class CreateOrder : ICreateOrder
     // TODO: make sure 'usd' is $X.XX and not fractional
     
     var apiKey = await _apiKeyManager.GetData();
-    string responseBody = await _httpClientSingleton.SendPostRequest(apiKey, "/orders", $"market buy order for {usd.ToString("c", CultureInfo.InvariantCulture)} {coinType}",
+    string responseBody = await _httpClientSingleton.SendPostRequest(apiKey, "/orders", $"market buy order for ${usd} {coinType}",
       new JObject()
       {
         ["profile_id"] = apiKey.Id,

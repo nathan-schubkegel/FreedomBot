@@ -1,4 +1,5 @@
-﻿using Ninject;
+using Ninject;
+using System.Globalization;
 
 namespace FreedomBot;
 
@@ -8,6 +9,10 @@ public static class Program
   {
     try
     {
+      // Make it so ToString() and TryParse() never need to be given CultureInfo.InvariantCulture
+      CultureInfo.DefaultThreadCurrentCulture = CultureInfo.InvariantCulture;
+      CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.InvariantCulture;
+
       var args = new ProgramArgs(argsArray);
       StandardKernel kernel = CreateServiceProvider(args);
       switch (args[0].ToLowerInvariant())

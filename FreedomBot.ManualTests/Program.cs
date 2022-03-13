@@ -2,6 +2,7 @@
 
 using Ninject;
 using FreedomBot;
+using System.Globalization;
 using System.Text;
 using Newtonsoft.Json;
 using Xunit;
@@ -16,6 +17,10 @@ public class Program
   {
     try
     {
+      // Make it so ToString() and TryParse() never need to be given CultureInfo.InvariantCulture
+      CultureInfo.DefaultThreadCurrentCulture = CultureInfo.InvariantCulture;
+      CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.InvariantCulture;
+
       _kernel = FreedomBot.Program.CreateServiceProvider(new ProgramArgs(new string[0]));
 
       // get api key at the start of the test, so that the first thing the test always does is ask for password

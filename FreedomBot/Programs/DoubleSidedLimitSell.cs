@@ -77,7 +77,7 @@ public class DoubleSidedLimitSell
     // check that the desired number of coins are available to sell
     if (_coinCount != null && _coinCount.Value > account.Available)
     {
-      throw new Exception($"invalid 3rd arg; insufficient coins, only {account.Available.ToString(CultureInfo.InvariantCulture)} available");
+      throw new Exception($"invalid 3rd arg; insufficient coins, only {account.Available} available");
     }
 
     // check that the current price is within the desired range
@@ -85,20 +85,18 @@ public class DoubleSidedLimitSell
     if (ticker.LastTradePrice < _low)
     {
       throw new Exception($"unable to perform double-sided limit order; the most recent trade for {_coinType} was " +
-        $"${ticker.LastTradePrice.ToString(CultureInfo.InvariantCulture)} which is below your provided low sell limit " +
-        $"${_low.ToString(CultureInfo.InvariantCulture)}");
+        $"${ticker.LastTradePrice} which is below your provided low sell limit ${_low}");
     }
     if (ticker.LastTradePrice > _high)
     {
       throw new Exception($"unable to perform double-sided limit order; the most recent trade for {_coinType} was " +
-        $"${ticker.LastTradePrice.ToString(CultureInfo.InvariantCulture)} which is above your provided high sell limit " +
-        $"${_high.ToString(CultureInfo.InvariantCulture)}");
+        $"${ticker.LastTradePrice} which is above your provided high sell limit ${_high}");
     }
 
     Console.WriteLine($"Entering loop to watch current price of {_coinType}, " +
-      $"to sell {(_coinCount?.ToString(CultureInfo.InvariantCulture) ?? "all")} " +
-      $"when average price over 1 minute drops to ${_low.ToString(CultureInfo.InvariantCulture)} " +
-      $"or climbs to ${_high.ToString(CultureInfo.InvariantCulture)}");
+      $"to sell {(_coinCount?.ToString() ?? "all")} " +
+      $"when average price over 1 minute drops to ${_low} " +
+      $"or climbs to ${_high}");
 
     var lastTradePrices = new Queue<Decimal>();
     lastTradePrices.Enqueue(ticker.LastTradePrice);
@@ -113,8 +111,8 @@ public class DoubleSidedLimitSell
         while (lastTradePrices.Count > 60) lastTradePrices.Dequeue();
         average = lastTradePrices.Average();
         maxDecimals = Math.Max(maxDecimals, ticker.LastTradePrice.GetDecimalDigits());
-        var averageText = average.SetMaxDecimals(maxDecimals).ToString(CultureInfo.InvariantCulture);
-        var lastTradePriceText = ticker.LastTradePrice.SetMaxDecimals(maxDecimals).ToString(CultureInfo.InvariantCulture);
+        var averageText = average.SetMaxDecimals(maxDecimals).ToString();
+        var lastTradePriceText = ticker.LastTradePrice.SetMaxDecimals(maxDecimals).ToString();
         Console.WriteLine($"1-minute-average=${averageText} last-trade-price=${lastTradePriceText}");
       }
       catch (Exception ex)
@@ -126,7 +124,7 @@ public class DoubleSidedLimitSell
     Console.WriteLine($"Ding fries are done!");
     accounts = await _accounts.GetAccounts();
     account = accounts.FirstOrDefault(x => x.CoinType == _coinType) ?? throw new Exception($"somehow unable to learn coin count before sale");
-    Console.WriteLine($"selling {account.Available} {_coinType} at ${lastTradePrices.Peek().ToString(CultureInfo.InvariantCulture)} at {DateTime.Now}");
+    Console.WriteLine($"selling {account.Available} {_coinType} at ${lastTradePrices.Peek()} at {DateTime.Now}");
     var order = await _createOrder.MarketSell(_coinType, account.Available);
     Console.WriteLine(order.Fields.ToString());
   }
