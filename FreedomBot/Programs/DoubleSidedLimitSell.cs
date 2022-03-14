@@ -2,6 +2,7 @@ using System.Globalization;
 
 namespace FreedomBot.Programs;
 
+// Program that sells some quantity of coins when the average price over 1 minute reaches a high or low limit
 public class DoubleSidedLimitSell
 {
   private readonly Coinbase.IAccounts _accounts;

@@ -20,9 +20,13 @@ public static class Program
         case "double-sided-limit-sell":
           await kernel.Get<Programs.DoubleSidedLimitSell>().Run();
           break;
-          
+
+        case "rising-buyback-limit-sell":
+          await kernel.Get<Programs.RisingBuybackLimitSell>().Run();
+          break;
+
         default:
-          throw new Exception("invalid arguments; first argument must be double-sided-limit-sell");
+          throw new Exception("invalid arguments; first argument must be one of: double-sided-limit-sell, rising-buyback-limit-sell");
       };
       return 0;
     }
@@ -49,6 +53,7 @@ public static class Program
     kernel.Bind<Coinbase.IFees>().To<Coinbase.Fees>().InSingletonScope();
     kernel.Bind<Coinbase.ICreateOrder>().To<Coinbase.CreateOrder>().InSingletonScope();
     kernel.Bind<Programs.DoubleSidedLimitSell>().ToSelf();
+    kernel.Bind<Programs.RisingBuybackLimitSell>().ToSelf();
     kernel.Bind<ProgramArgs>().ToMethod(_ => args).InSingletonScope();
     return kernel;
   }
