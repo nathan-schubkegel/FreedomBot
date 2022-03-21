@@ -67,12 +67,7 @@ public class RisingBuybackLimitSell
     {
       throw new Exception($"invalid 6th arg; expected buyback range in USD, such as \"1.00\"");
     }
-    
-    if (buybackRange >= firstTarget - failureLimit)
-    {
-      throw new Exception($"invalid 6th arg; expected buyback range less than {firstTarget - failureLimit} (difference between firstTarget={firstTarget} and failureLimit={failureLimit})");
-    }
-    
+
     // check that coinType is valid
     var accounts = await _accounts.GetAccounts();
     var account = accounts.FirstOrDefault(x => x.CoinType.ToLowerInvariant() == coinType.ToLowerInvariant() && x.CoinType != "USD")
@@ -105,13 +100,10 @@ public class RisingBuybackLimitSell
     {
       throw new Exception($"unable to perform order; the most recent trade for {coinType} was ${ticker.LastTradePrice} which is at/below your provided failure limit ${failureLimit}");
     }
-    if (ticker.LastTradePrice >= firstTarget)
-    {
-      throw new Exception($"unable to perform order; the most recent trade for {coinType} was ${ticker.LastTradePrice} which is at/above your provided first target ${firstTarget}");
-    }
     if (ticker.LastTradePrice > firstTarget - buybackRange)
     {
-      throw new Exception($"unable to perform order; the most recent trade for {coinType} was ${ticker.LastTradePrice} which is above your provided first target ${firstTarget} minus buyback range ${buybackRange}");
+      Console.WriteLine($"the most recent trade for {coinType} was ${ticker.LastTradePrice} which is above your provided first target ${firstTarget} minus buyback range ${buybackRange} - are you sure? (Y/N)");
+      if (Console.ReadLine()?.ToLowerInvariant() != "y") throw new Exception("cancelled");
     }
 
     Console.WriteLine($"Entering loop to watch current price of {coinType}, " +
@@ -153,10 +145,14 @@ public class RisingBuybackLimitSell
     }
 
     Console.WriteLine($"Ding fries are done!");
-    accounts = await _accounts.GetAccounts();
-    account = accounts.FirstOrDefault(x => x.CoinType == coinType) ?? throw new Exception($"somehow unable to learn coin count before sale");
-    Console.WriteLine($"selling {account.Available} {coinType} at ${lastTradePrices.Peek()} at {DateTime.Now}");
-    //var order = await _createOrder.MarketSell(coinType, account.Available);
-    //Console.WriteLine(order.Fields.ToString());
+    if (coinCount == null)
+    {
+      accounts = await _accounts.GetAccounts();
+      account = accounts.FirstOrDefault(x => x.CoinType == coinType) ?? throw new Exception($"somehow unable to learn coin count before sale");
+      coinCount = account.Available;
+    }
+    Console.WriteLine($"selling {coinCount.Value} {coinType} at ${lastTradePrices.Peek()} at {DateTime.Now}");
+    var order = await _createOrder.MarketSell(coinType, coinCount.Value);
+    Console.WriteLine(order.Fields.ToString());
   }
 }
