@@ -106,16 +106,14 @@ public class RisingBuybackLimitSell
       if (Console.ReadLine()?.ToLowerInvariant() != "y") throw new Exception("cancelled");
     }
 
-    Console.WriteLine($"Entering loop to watch current price of {coinType}, " +
-      $"to sell {(coinCount?.ToString() ?? "all")} " +
-      $"when average price over 1 minute drops to ${failureLimit} " +
-      $"or climbs to/above ${firstTarget} and then drops ${buybackRange}");
-
+    string message = $"Watching {coinType} to sell {(coinCount?.ToString() ?? "all")} when price drops to ${failureLimit} or climbs above ${firstTarget} and then drops by ${buybackRange}";
+    Console.WriteLine(message);
     var lastTradePrices = new Queue<Decimal>();
     lastTradePrices.Enqueue(ticker.LastTradePrice);
     var average = ticker.LastTradePrice;
     int maxDecimals = ticker.LastTradePrice.GetDecimalDigits();
     var highestObservedAverage = average;
+    int priceChecksSinceMessagePrint = 0;
     while (average > failureLimit)
     {
       if (highestObservedAverage >= firstTarget)
@@ -128,9 +126,17 @@ public class RisingBuybackLimitSell
        
       try
       {
+        if (priceChecksSinceMessagePrint >= 10)
+        {
+          priceChecksSinceMessagePrint = 0;
+          Console.WriteLine();
+          Console.WriteLine(message);
+        }
+        priceChecksSinceMessagePrint++;
+        await Task.Delay(4000);
         ticker = await _productTicker.GetTicker(coinType);
         lastTradePrices.Enqueue(ticker.LastTradePrice);
-        while (lastTradePrices.Count > 60) lastTradePrices.Dequeue();
+        while (lastTradePrices.Count > 12) lastTradePrices.Dequeue();
         average = lastTradePrices.Average();
         highestObservedAverage = Math.Max(highestObservedAverage, average);
         maxDecimals = Math.Max(maxDecimals, ticker.LastTradePrice.GetDecimalDigits());
