@@ -11,6 +11,7 @@ public class HttpClientSingleton : IHttpClientSingleton
   private readonly IHttpLogger _logger;
   private readonly HttpClient _client = new HttpClient();
   private readonly SemaphoreSlim _semaphore = new SemaphoreSlim(1);
+  private System.Diagnostics.Stopwatch? _timer;
   
   public HttpClientSingleton(IHttpLogger logger)
   {
@@ -22,13 +23,29 @@ public class HttpClientSingleton : IHttpClientSingleton
     await _semaphore.WaitAsync();
     try
     {
-      _logger.Log($"HttpClientSingleton: {description}");
+      // ensure 1 full second between all coinbase api requests
+      if (_timer == null)
+      {
+        _timer = System.Diagnostics.Stopwatch.StartNew();
+      }
+      else
+      {
+        int msRemaining = Math.Max(0, 1000 - (int)_timer.ElapsedMilliseconds);
+        if (msRemaining > 0)
+        {
+          await Task.Delay(msRemaining);
+        }
+      }
+      if (description != null)
+      {
+        _logger.Log($"HttpClientSingleton: {description}");
+      }
       await action(_client);
     }
     finally
     {
-      await Task.Delay(1000); // ensure 1 full second between all coinbase api requests
       _semaphore.Release();
+      _timer?.Restart();
     }
   }
 }
