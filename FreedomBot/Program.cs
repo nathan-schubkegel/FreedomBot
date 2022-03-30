@@ -22,7 +22,13 @@ public static class Program
           break;
 
         case "rising-buyback-limit-sell":
+        case "sell-high":
           await kernel.Get<Programs.RisingBuybackLimitSell>().Run();
+          break;
+          
+        case "falling-recovery-limit-buy":
+        case "buy-low":
+          await kernel.Get<Programs.FallingRecoveryLimitBuy>().Run();
           break;
 
         default:

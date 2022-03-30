@@ -4,8 +4,8 @@ namespace FreedomBot.Programs;
 
 // Program that sells a quantity of coins when the average price over 1 minute meets some conditions.
 //  - Failure Limit (provided by user) - if the price ever drops to/below this point, then sell.
-//  - First Target (provided by user) - once the price reaches this point, then sell when
-//                                      the price drops less than [Maximum Price Observed minus Buyback Range]
+//  - First Target (provided by user) - once the price rises to this point, then sell when
+//                                      the price drops to [Maximum Price Observed minus Buyback Range] or less.
 //  - Buyback Range (provided by user)
 // Examples: with failure limit = $0.45, price starting at $0.50, first target = $0.55, Buyback Range = $0.03
 //   - if price drops to/below $0.45, this program sells at $0.45
@@ -106,7 +106,7 @@ public class RisingBuybackLimitSell
       if (Console.ReadLine()?.ToLowerInvariant() != "y") throw new Exception("cancelled");
     }
 
-    string message = $"Watching {coinType} to sell {(coinCount?.ToString() ?? "all")} when price drops to ${failureLimit} or climbs above ${firstTarget} and then drops by ${buybackRange}";
+    string message = $"Watching {coinType} to sell {(coinCount?.ToString() ?? "all")} when average price drops to ${failureLimit} or climbs above ${firstTarget} and then drops by ${buybackRange}";
     Console.WriteLine(message);
     var lastTradePrices = new Queue<Decimal>();
     lastTradePrices.Enqueue(ticker.LastTradePrice);
