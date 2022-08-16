@@ -9,7 +9,9 @@
   </PropertyGroup>
   
   <ItemGroup>
-    <ProjectReference Include="../FreedomBot/FreedomBot.csproj" />
+    <Compile Include="../FreedomBot/**/*.cs" Exclude="../FreedomBot/obj/**;../FreedomBot/bin/**;../FreedomBot/Program.cs" />
+    <PackageReference Include="Ninject" Version="3.3.4" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
   </ItemGroup>
 
 </Project>

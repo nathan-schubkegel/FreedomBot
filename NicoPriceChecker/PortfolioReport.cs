@@ -24,9 +24,10 @@ public class PortfolioReport
       if (account.CoinType != "USD")
       {
         var ticker = await _productTicker.GetTicker(account.CoinType);
+        var balance = account.Balance.SetMaxDecimals(account.Balance.GetDecimalDigits());
         var valueUsd = (ticker.LastTradePrice * account.Balance).SetMaxDecimals(2);
         totalValueUsd += valueUsd;
-        Console.WriteLine($"You have {account.Balance.ToString("G29")} {account.CoinType}, and it's worth ${valueUsd} USD");
+        Console.WriteLine($"You have {balance} {account.CoinType}, and it's worth ${valueUsd} USD");
       }
       else
       {

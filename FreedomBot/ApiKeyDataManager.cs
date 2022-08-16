@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 
 public interface IApiKeyDataManager
 {
+  string ApiKeyDataFilePath { get; set; }
   Task<ApiKeyData> GetData();
 }
 
@@ -15,6 +16,8 @@ public class ApiKeyDataManager : IApiKeyDataManager
   private readonly IEncryptionPassword _password;
   private readonly IEncryptor _encryptor;
   private ApiKeyData? _apiKeyData;
+  
+  public string ApiKeyDataFilePath { get; set; } = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "apiKey.data");
 
   public ApiKeyDataManager(ISecureConsole console, IEncryptionPassword password, IEncryptor encryptor)
   {
@@ -32,7 +35,7 @@ public class ApiKeyDataManager : IApiKeyDataManager
     var passwordBytes = Encoding.UTF8.GetBytes(passwordText);
 
     // does the user already have encrypted data?
-    var apiKeyDataPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "apiKey.data");
+    var apiKeyDataPath = ApiKeyDataFilePath;
     if (File.Exists(apiKeyDataPath))
     {
       try

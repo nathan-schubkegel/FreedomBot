@@ -1,6 +1,7 @@
 ﻿using FreedomBot;
 using Ninject;
 using System.Globalization;
+using System.Linq;
 
 namespace NicoPriceChecker;
 
@@ -13,9 +14,18 @@ public static class Program
       // Make it so ToString() and TryParse() never need to be given CultureInfo.InvariantCulture
       CultureInfo.DefaultThreadCurrentCulture = CultureInfo.InvariantCulture;
       CultureInfo.DefaultThreadCurrentUICulture = CultureInfo.InvariantCulture;
-
+      
       var args = new ProgramArgs(argsArray);
       StandardKernel kernel = CreateServiceProvider(args);
+      
+      // handle command line argument dictating api key file path
+      var i = args.IndexOf("--apiKeyFile");
+      if (i >= 0)
+      {
+        kernel.Get<IApiKeyDataManager>().ApiKeyDataFilePath = System.IO.Path.GetFullPath(args.Args[i+1]);
+      }
+
+      // run the program
       await kernel.Get<PortfolioReport>().Run();
       return 0;
     }
