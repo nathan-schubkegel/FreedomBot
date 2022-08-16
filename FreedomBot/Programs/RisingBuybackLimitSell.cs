@@ -106,7 +106,7 @@ public class RisingBuybackLimitSell
       if (Console.ReadLine()?.ToLowerInvariant() != "y") throw new Exception("cancelled");
     }
 
-    string message = $"Watching {coinType} to sell {(coinCount?.ToString() ?? "all")} when average price drops to ${failureLimit} or climbs above ${firstTarget} and then drops by ${buybackRange}";
+    string message = $"Watching {coinType} to sell {(coinCount?.ToString() ?? "all")} when average price drops to ${failureLimit} or climbs to/above ${firstTarget} and then drops by ${buybackRange}";
     Console.WriteLine(message);
     var lastTradePrices = new Queue<Decimal>();
     lastTradePrices.Enqueue(ticker.LastTradePrice);
@@ -141,8 +141,9 @@ public class RisingBuybackLimitSell
         highestObservedAverage = Math.Max(highestObservedAverage, average);
         maxDecimals = Math.Max(maxDecimals, ticker.LastTradePrice.GetDecimalDigits());
         var averageText = average.SetMaxDecimals(maxDecimals).ToString();
+        var highestObservedAverageText = highestObservedAverage.SetMaxDecimals(maxDecimals).ToString();
         var lastTradePriceText = ticker.LastTradePrice.SetMaxDecimals(maxDecimals).ToString();
-        Console.WriteLine($"1-minute-average=${averageText} last-trade-price=${lastTradePriceText}");
+        Console.WriteLine($"highest-observed=${highestObservedAverageText} 1-minute-average=${averageText} last-trade-price=${lastTradePriceText}");
       }
       catch (Exception ex)
       {

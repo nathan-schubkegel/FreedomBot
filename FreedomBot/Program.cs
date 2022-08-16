@@ -18,6 +18,7 @@ public static class Program
       switch (args[0].ToLowerInvariant())
       {
         case "double-sided-limit-sell":
+        case "sell":
           await kernel.Get<Programs.DoubleSidedLimitSell>().Run();
           break;
 
